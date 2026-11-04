@@ -4,26 +4,30 @@ import { Banner } from '../../components/Banner/Banner';
 import { Button } from '../../components/Button/Button';
 import { Screen } from '../../components/Screen/Screen';
 import { AppText } from '../../components/Text/Text';
+import useHomeScreen from './HomeScreen-hook';
 import { styles } from './HomeScreen.style';
 
-type Props = {
-  onOpenDiagnostics?: () => void;
-};
+export function HomeScreen() {
+  const { picking, handlePickFile, handleOpenDiagnostics } = useHomeScreen();
 
-export function HomeScreen({ onOpenDiagnostics }: Props) {
   return (
     <Screen>
       <AppText variant="title">Импорт выписки</AppText>
       <AppText variant="muted">
-        Выберите синтетический PDF или CSV. Загрузка будет на следующих этапах.
+        Выберите синтетический PDF или CSV. Проверка размера и содержимого — до
+        отправки на сервер.
       </AppText>
       <Banner tone="info">Пусто — файл ещё не выбран.</Banner>
       <View style={styles.actions}>
-        <Button label="Выбрать файл" onPress={() => {}} disabled />
+        <Button
+          label={picking ? 'Открытие…' : 'Выбрать файл'}
+          onPress={handlePickFile}
+          disabled={picking}
+        />
         <Button
           label="Диагностика"
           variant="secondary"
-          onPress={onOpenDiagnostics ?? (() => {})}
+          onPress={handleOpenDiagnostics}
         />
       </View>
     </Screen>

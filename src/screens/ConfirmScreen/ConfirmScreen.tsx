@@ -1,27 +1,35 @@
 import React from 'react';
 import { View } from 'react-native';
+import { Banner } from '../../components/Banner/Banner';
 import { Button } from '../../components/Button/Button';
 import { ListItem } from '../../components/ListItem/ListItem';
 import { Screen } from '../../components/Screen/Screen';
 import { AppText } from '../../components/Text/Text';
+import { formatFileSize } from '../../services/fileValidation';
+import useConfirmScreen from './ConfirmScreen-hook';
 import { styles } from './ConfirmScreen.style';
 
-type Props = {
-  onBack?: () => void;
-  onConfirm?: () => void;
-};
+export function ConfirmScreen() {
+  const { file, handleBack, handleConfirm } = useConfirmScreen();
 
-export function ConfirmScreen({ onBack, onConfirm }: Props) {
+  if (!file) {
+    return null;
+  }
+
   return (
     <Screen>
       <AppText variant="title">Подтверждение файла</AppText>
       <AppText variant="muted">
         Имя, размер и формат — до отправки на сервер.
       </AppText>
-      <ListItem title="имя_файла.ext" subtitle="формат · размер" />
+      <Banner tone="ok">Файл прошёл локальную проверку. POST ещё не начат.</Banner>
+      <ListItem
+        title={file.name}
+        subtitle={`${file.format.toUpperCase()} · ${formatFileSize(file.size)} (${file.size} байт)`}
+      />
       <View style={styles.actions}>
-        <Button label="Отправить" onPress={onConfirm ?? (() => {})} disabled />
-        <Button label="Назад" variant="secondary" onPress={onBack ?? (() => {})} />
+        <Button label="Отправить" onPress={handleConfirm} disabled />
+        <Button label="Назад" variant="secondary" onPress={handleBack} />
       </View>
     </Screen>
   );
