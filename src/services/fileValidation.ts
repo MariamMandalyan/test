@@ -76,3 +76,14 @@ export function formatFileSize(bytes: number): string {
   }
   return `${(bytes / (1024 * 1024)).toFixed(2)} MiB`;
 }
+
+export function formatAmountAud(amountMinor: number): string {
+  return `${(amountMinor / 100).toFixed(2)} AUD`;
+}
+
+export function monthlyTotalMinor(
+  items: { amountMinor: number }[],
+): number {
+  return items.reduce((sum, item) => sum + item.amountMinor, 0);
+}
+

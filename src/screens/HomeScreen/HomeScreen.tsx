@@ -8,7 +8,13 @@ import useHomeScreen from './HomeScreen-hook';
 import { styles } from './HomeScreen.style';
 
 export function HomeScreen() {
-  const { picking, handlePickFile, handleOpenDiagnostics } = useHomeScreen();
+  const {
+    picking,
+    resumeAvailable,
+    handlePickFile,
+    handleContinueResume,
+    handleOpenDiagnostics,
+  } = useHomeScreen();
 
   return (
     <Screen>
@@ -17,13 +23,26 @@ export function HomeScreen() {
         Выберите синтетический PDF или CSV. Проверка размера и содержимого — до
         отправки на сервер.
       </AppText>
-      <Banner tone="info">Пусто — файл ещё не выбран.</Banner>
+      {resumeAvailable ? (
+        <Banner tone="info">
+          Есть сохранённый импорт. Можно продолжить без повторной отправки.
+        </Banner>
+      ) : (
+        <Banner tone="info">Пусто — файл ещё не выбран.</Banner>
+      )}
       <View style={styles.actions}>
         <Button
           label={picking ? 'Открытие…' : 'Выбрать файл'}
           onPress={handlePickFile}
           disabled={picking}
         />
+        {resumeAvailable ? (
+          <Button
+            label="Продолжить сохранённый импорт"
+            variant="secondary"
+            onPress={handleContinueResume}
+          />
+        ) : null}
         <Button
           label="Диагностика"
           variant="secondary"

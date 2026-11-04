@@ -29,6 +29,12 @@ function base64ToBytes(base64: string): Uint8Array {
   return out;
 }
 
+export async function readFileBytes(uri: string): Promise<Uint8Array> {
+  const path = stripFileScheme(uri);
+  const base64 = await ReactNativeBlobUtil.fs.readFile(path, 'base64');
+  return base64ToBytes(base64);
+}
+
 async function readHeadBytes(localUri: string): Promise<Uint8Array> {
   const path = stripFileScheme(localUri);
   const tmp = `${ReactNativeBlobUtil.fs.dirs.CacheDir}/import-head-${Date.now()}.bin`;

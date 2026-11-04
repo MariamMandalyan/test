@@ -1,30 +1,29 @@
 import React from 'react';
 import { StatusBar, useColorScheme } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
+import useAppBootstrap from './src/App-hook';
 import { WarningModal } from './src/components/WarningModal/WarningModal';
-import { screenSelector } from './src/redux/selectors/administrativeSelector';
+import { RootNavigator } from './src/navigation/RootNavigator';
+import { rootNavigationRef } from './src/navigation/rootNavigationRef';
 import { store } from './src/redux/store';
-import { ConfirmScreen } from './src/screens/ConfirmScreen/ConfirmScreen';
-import { DiagnosticsScreen } from './src/screens/DiagnosticsScreen/DiagnosticsScreen';
-import { HomeScreen } from './src/screens/HomeScreen/HomeScreen';
 
 function AppContent() {
   const isDarkMode = useColorScheme() === 'dark';
-  const screen = useSelector(screenSelector);
+  useAppBootstrap();
 
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      {screen === 'diagnostics' ? (
-        <DiagnosticsScreen />
-      ) : screen === 'confirm' ? (
-        <ConfirmScreen />
-      ) : (
-        <HomeScreen />
-      )}
-      <WarningModal />
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+        <NavigationContainer ref={rootNavigationRef}>
+          <RootNavigator />
+        </NavigationContainer>
+        <WarningModal />
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 

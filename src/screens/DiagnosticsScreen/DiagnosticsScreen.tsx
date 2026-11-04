@@ -4,26 +4,67 @@ import { Banner } from '../../components/Banner/Banner';
 import { Button } from '../../components/Button/Button';
 import { Screen } from '../../components/Screen/Screen';
 import { AppText } from '../../components/Text/Text';
-import useDiagnosticsScreen from './DiagnosticsScreen-hook';
+import useDiagnosticsScreen, {
+  SCENARIO_MODES,
+} from './DiagnosticsScreen-hook';
 import { styles } from './DiagnosticsScreen.style';
 
 export function DiagnosticsScreen() {
-  const { handleBack } = useDiagnosticsScreen();
+  const {
+    busy,
+    message,
+    stateText,
+    activeMode,
+    handleSetScenario,
+    handleRefreshState,
+    handleReset,
+    handleBack,
+  } = useDiagnosticsScreen();
 
   return (
     <Screen>
       <AppText variant="title">Диагностика</AppText>
       <AppText variant="muted">
-        Переключение сценария mock через /__test/scenario и просмотр
-        /__test/state.
+        Переключение сценариев mock через /__test/scenario. Исходники kit между
+        прогонами не меняем.
       </AppText>
-      <Banner tone="warn">Подключение API — на следующем этапе.</Banner>
+      {message ? <Banner tone="info">{message}</Banner> : null}
+      {stateText ? <Banner tone="ok">{stateText}</Banner> : null}
+      {activeMode ? (
+        <Banner tone="info">{`Активный сценарий: ${activeMode}`}</Banner>
+      ) : null}
+      <AppText variant="muted">
+        lost_ack — первый POST без ответа; stale_status — устаревшая revision
+        после ready; delete_failure — DELETE 503 без удаления.
+      </AppText>
       <View style={styles.actions}>
-        <Button label="happy" onPress={() => {}} disabled />
-        <Button label="lost_ack" variant="secondary" onPress={() => {}} disabled />
-        <Button label="stale_status" variant="secondary" onPress={() => {}} disabled />
-        <Button label="delete_failure" variant="secondary" onPress={() => {}} disabled />
-        <Button label="Назад" variant="secondary" onPress={handleBack} />
+        {SCENARIO_MODES.map(mode => (
+          <Button
+            key={mode}
+            label={mode === activeMode ? `✓ ${mode}` : mode}
+            variant={mode === activeMode ? 'primary' : 'secondary'}
+            onPress={() => handleSetScenario(mode)}
+            disabled={busy}
+          />
+        ))}
+        <Button
+          label="Обновить /__test/state"
+          variant="secondary"
+          onPress={handleRefreshState}
+          disabled={busy}
+        />
+        <Button
+          label="Сбросить mock"
+          variant="danger"
+          onPress={handleReset}
+          disabled={busy}
+        />
+        <Button
+          label="Назад"
+          variant="secondary"
+          onPress={handleBack}
+          disabled={busy}
+        />
       </View>
     </Screen>
   );

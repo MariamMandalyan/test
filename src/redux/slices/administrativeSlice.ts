@@ -1,8 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { SelectedFile } from '../../types/import';
 
-export type AppScreen = 'home' | 'confirm' | 'diagnostics';
-
 export type WarningActionButton = {
   label: string;
   variant?: 'primary' | 'secondary' | 'danger';
@@ -17,7 +15,6 @@ export type WarningModalState = {
 };
 
 export type AdministrativeState = {
-  screen: AppScreen;
   selectedFile: SelectedFile | null;
   warningModal: WarningModalState;
 };
@@ -30,7 +27,6 @@ const emptyWarningModal = (): WarningModalState => ({
 });
 
 const initialState: AdministrativeState = {
-  screen: 'home',
   selectedFile: null,
   warningModal: emptyWarningModal(),
 };
@@ -45,22 +41,8 @@ export const administrativeSlice = createSlice({
   name: 'administrative',
   initialState,
   reducers: {
-    setScreen: (state, action: PayloadAction<AppScreen>) => {
-      state.screen = action.payload;
-    },
     setSelectedFile: (state, action: PayloadAction<SelectedFile | null>) => {
       state.selectedFile = action.payload;
-    },
-    goToConfirm: (state, action: PayloadAction<SelectedFile>) => {
-      state.selectedFile = action.payload;
-      state.screen = 'confirm';
-    },
-    goToHome: state => {
-      state.selectedFile = null;
-      state.screen = 'home';
-    },
-    goToDiagnostics: state => {
-      state.screen = 'diagnostics';
     },
     showWarningModal: (state, action: PayloadAction<ShowWarningPayload>) => {
       const { title, description, actionButtons } = action.payload;
@@ -80,14 +62,7 @@ export const administrativeSlice = createSlice({
   },
 });
 
-export const {
-  setScreen,
-  setSelectedFile,
-  goToConfirm,
-  goToHome,
-  goToDiagnostics,
-  showWarningModal,
-  hideWarningModal,
-} = administrativeSlice.actions;
+export const { setSelectedFile, showWarningModal, hideWarningModal } =
+  administrativeSlice.actions;
 
 export default administrativeSlice.reducer;

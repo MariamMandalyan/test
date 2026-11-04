@@ -10,7 +10,8 @@ import useConfirmScreen from './ConfirmScreen-hook';
 import { styles } from './ConfirmScreen.style';
 
 export function ConfirmScreen() {
-  const { file, handleBack, handleConfirm } = useConfirmScreen();
+  const { file, keysReady, uploading, handleBack, handleConfirm } =
+    useConfirmScreen();
 
   if (!file) {
     return null;
@@ -22,14 +23,27 @@ export function ConfirmScreen() {
       <AppText variant="muted">
         Имя, размер и формат — до отправки на сервер.
       </AppText>
-      <Banner tone="ok">Файл прошёл локальную проверку. POST ещё не начат.</Banner>
+      <Banner tone={keysReady ? 'ok' : 'info'}>
+        {keysReady
+          ? 'Idempotency-ключ сохранён. POST ещё не начат.'
+          : 'Готовим ключ идемпотентности…'}
+      </Banner>
       <ListItem
         title={file.name}
         subtitle={`${file.format.toUpperCase()} · ${formatFileSize(file.size)} (${file.size} байт)`}
       />
       <View style={styles.actions}>
-        <Button label="Отправить" onPress={handleConfirm} disabled />
-        <Button label="Назад" variant="secondary" onPress={handleBack} />
+        <Button
+          label={uploading ? 'Отправка…' : 'Отправить'}
+          onPress={handleConfirm}
+          disabled={!keysReady || uploading}
+        />
+        <Button
+          label="Назад"
+          variant="secondary"
+          onPress={handleBack}
+          disabled={uploading}
+        />
       </View>
     </Screen>
   );

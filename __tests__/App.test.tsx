@@ -23,6 +23,40 @@ jest.mock('react-native-blob-util', () => ({
   },
 }));
 
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  __esModule: true,
+  default: {
+    getItem: jest.fn(async () => null),
+    setItem: jest.fn(async () => undefined),
+    removeItem: jest.fn(async () => undefined),
+  },
+}));
+
+jest.mock('react-native-gesture-handler', () => {
+  const ReactNative = require('react-native');
+  return {
+    GestureHandlerRootView: ReactNative.View,
+    Swipeable: ReactNative.View,
+    DrawerLayout: ReactNative.View,
+    State: {},
+    PanGestureHandler: ReactNative.View,
+    BaseButton: ReactNative.View,
+    RectButton: ReactNative.View,
+    BorderlessButton: ReactNative.View,
+  };
+});
+
+jest.mock('react-native-screens', () => {
+  const ReactNative = require('react-native');
+  return {
+    enableScreens: jest.fn(),
+    Screen: ReactNative.View,
+    ScreenContainer: ReactNative.View,
+    NativeScreen: ReactNative.View,
+    NativeScreenContainer: ReactNative.View,
+  };
+});
+
 import App from '../App';
 
 test('renders correctly', async () => {
